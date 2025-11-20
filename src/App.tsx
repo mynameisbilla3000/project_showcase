@@ -1,8 +1,7 @@
-import { Authenticated, Unauthenticated, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { BrowserRouter as Router, Link } from "react-router-dom";
-import { SignInForm } from "./SignInForm";
-import { SignOutButton } from "./SignOutButton";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 import { ChatWidget } from "./components/ChatWidget";
 import { Toaster } from "sonner";
 import { PageBackground } from "./components/PageBackground";
@@ -44,24 +43,28 @@ function Header() {
             </span>
           </Link>
 
-          <Authenticated>
+          <SignedIn>
             <Navigation />
-          </Authenticated>
+          </SignedIn>
 
           <div className="flex items-center space-x-4">
-            <Authenticated>
-              <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-600">
-                  Welcome, {loggedInUser?.email?.split('@')[0] || 'friend'}!
-                </span>
-                <SignOutButton />
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <div className="flex items-center space-x-2">
+                <SignInButton mode="modal">
+                  <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Sign Up
+                  </button>
+                </SignUpButton>
               </div>
-            </Authenticated>
-            <Unauthenticated>
-              <div className="text-sm text-gray-600">
-                Sign in to explore India together
-              </div>
-            </Unauthenticated>
+            </SignedOut>
           </div>
         </div>
       </div>

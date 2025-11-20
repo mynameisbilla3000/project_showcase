@@ -3,9 +3,10 @@ import { api } from "../../convex/_generated/api";
 import { useState } from "react";
 import { toast } from "sonner";
 import { User, Edit, MapPin, Calendar, IndianRupee, Trophy } from "lucide-react";
+import { UserProfile, useUser } from "@clerk/clerk-react";
 
 export function Profile() {
-  const loggedInUser = useQuery(api.auth.loggedInUser);
+  const { isLoaded, isSignedIn, user } = useUser();
   const profile = useQuery(api.profiles.getProfile, {});
   const stats = useQuery(api.profiles.getUserStats, {});
   const userTrips = useQuery(api.trips.getUserTrips);
@@ -57,7 +58,17 @@ export function Profile() {
     }
   };
 
-  if (!loggedInUser) {
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSignedIn || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -96,6 +107,14 @@ export function Profile() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Clerk User Profile Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Account Settings</h2>
+          <div className="flex justify-center">
+            <UserProfile />
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Profile Info */}
           <div className="lg:col-span-2">
@@ -184,13 +203,13 @@ export function Profile() {
                   {/* Profile Header */}
                   <div className="flex items-start space-x-4">
                     <div className="w-20 h-20 bg-gradient-to-r from-blue-400 to-green-400 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                      {profile?.name?.charAt(0).toUpperCase() || loggedInUser.email?.charAt(0).toUpperCase() || "U"}
+                      {profile?.name?.charAt(0).toUpperCase() || user.emailAddresses[0]?.emailAddress?.charAt(0).toUpperCase() || "U"}
                     </div>
                     <div className="flex-1">
                       <h2 className="text-2xl font-bold text-gray-900">
                         {profile?.name || "Set up your profile"}
                       </h2>
-                      <p className="text-gray-600">{loggedInUser.email}</p>
+                      <p className="text-gray-600">{user.primaryEmailAddress?.emailAddress}</p>
                       {profile?.bio && (
                         <p className="text-gray-700 mt-2">{profile.bio}</p>
                       )}

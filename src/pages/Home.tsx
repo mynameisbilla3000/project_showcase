@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Users, MessageCircle, Calculator, Sparkles, ArrowRight, Compass, Star, Play } from "lucide-react";
+import { MapPin, Users, MessageCircle, Calculator, Sparkles, ArrowRight, Compass, Star } from "lucide-react";
 import { ImageService, UnsplashImage } from "../services/imageService";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Authenticated, Unauthenticated } from "convex/react";
-import { SignInForm } from "../SignInForm";
+import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { TripCard } from "../components/TripCard";
 
 export function Home() {
@@ -78,7 +77,7 @@ export function Home() {
               stunning photography, and comprehensive travel information.
             </p>
             
-            <Authenticated>
+            <SignedIn>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Link
                   to="/places/map"
@@ -105,13 +104,22 @@ export function Home() {
                   Plan Trip
                 </Link>
               </div>
-            </Authenticated>
+            </SignedIn>
 
-            <Unauthenticated>
-              <div className="max-w-md mx-auto mb-12">
-                <SignInForm />
+            <SignedOut>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <SignInButton mode="modal">
+                  <button className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all duration-300">
+                    Create Account
+                  </button>
+                </SignUpButton>
               </div>
-            </Unauthenticated>
+            </SignedOut>
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -178,7 +186,7 @@ export function Home() {
       </div>
 
       {/* Recent Trips Section */}
-      <Authenticated>
+      <SignedIn>
         <div className="relative z-10 py-24 bg-gray-50/95 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12">
@@ -198,13 +206,13 @@ export function Home() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {trips?.slice(0, 6).map((trip) => (
                 <TripCard key={trip._id} trip={trip} />
               ))}
             </div>
-            
+
             {(!trips || trips.length === 0) && (
               <div className="text-center py-16">
                 <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -227,30 +235,30 @@ export function Home() {
             )}
           </div>
         </div>
-      </Authenticated>
+      </SignedIn>
 
       {/* CTA Section */}
       <div className="relative z-10 py-24 bg-white">
-  <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-      Ready to Explore India?
-    </h2>
-    <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto">
-      Join thousands of travelers who have discovered amazing places with Sahyaatra. 
-      Start your journey today!
-    </p>
-    <div className="flex justify-center">
-      <Link
-        to="/places/map"
-        className="inline-flex items-center px-10 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
-      >
-        <MapPin className="w-6 h-6 mr-3" />
-        Start with Interactive Map
-        <ArrowRight className="w-5 h-5 ml-3" />
-      </Link>
-    </div>
-  </div>
-</div>
+        <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Ready to Explore India?
+          </h2>
+          <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto">
+            Join thousands of travelers who have discovered amazing places with Sahyaatra.
+            Start your journey today!
+          </p>
+          <div className="flex justify-center">
+            <Link
+              to="/places/map"
+              className="inline-flex items-center px-10 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
+            >
+              <MapPin className="w-6 h-6 mr-3" />
+              Start with Interactive Map
+              <ArrowRight className="w-5 h-5 ml-3" />
+            </Link>
+          </div>
+        </div>
+      </div>
 
     </div>
   );

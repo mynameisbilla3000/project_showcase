@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { MapPin, Users, MessageCircle, Calculator, User, Sparkles, Compass } from "lucide-react";
+import { MapPin, Users, User, Sparkles, Compass, Settings } from "lucide-react";
 
 export function Navigation() {
   const location = useLocation();
@@ -50,6 +50,17 @@ export function Navigation() {
       >
         <User className="w-4 h-4" />
         <span>Profile</span>
+      </Link>
+      <Link
+        to="/account"
+        className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-colors ${
+          isActive('/account') 
+            ? 'bg-blue-100 text-blue-700' 
+            : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+        }`}
+      >
+        <Settings className="w-4 h-4" />
+        <span>Account</span>
       </Link>
       <Link
         to="/demo"
